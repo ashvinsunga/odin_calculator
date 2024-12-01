@@ -5,8 +5,20 @@ let value = "";
 let input1 = 0;
 let input2 = 0;
 let calcOperator = ""
+let thereIsMessage = false;
 
 buttons.forEach(element => {
+
+    element.addEventListener("mouseover", function () {
+        element.style.cursor = 'pointer';
+        element.style.border = 'thick solid black'
+    })
+
+    element.addEventListener("mouseleave", function () {
+        // element.style.cursor = 'pointer';
+        element.style.border = '2px solid black'
+    })
+
     element.addEventListener("click", function () {
         if (this.classList.contains("operator-key")){
             screen.textContent += this.innerHTML
@@ -25,6 +37,16 @@ buttons.forEach(element => {
 });
 
 function populate(element){
+
+    if (thereIsMessage){
+        screen.textContent = 0
+        thereIsMessage = false;
+    }
+
+    if (screen.textContent == 0){
+        screen.textContent = ""
+        
+    }
     value += element.dataset.calcValue
     screenValue = screen.textContent
     screenValue += element.dataset.calcValue
@@ -35,16 +57,21 @@ function populate(element){
 function setFirstNum(){
     input1 = parseInt(value)
     value = 0;
-    console.log("setFirstNum was ran", input1)
+    // console.log("setFirstNum was ran", input1)
 }
 
 function setSecondNum(){
     input2 = parseInt(value)
     value = 0;
-    console.log("setSecondNum was ran", input2, input1)
+    // console.log("setSecondNum was ran", input2)
 }
 
 function setOperator(element) {
+
+    if (thereIsMessage){
+        screen.textContent = 0
+        thereIsMessage = false;
+    }
 
     if (input1 === 0){
         setFirstNum()
@@ -57,7 +84,7 @@ function setOperator(element) {
         calcOperator = "multiplication"
     }
 
-    if (element.textContent === "%"){
+    if (element.textContent === "÷"){
         calcOperator = "division"
     }
 
@@ -81,20 +108,30 @@ function clearValues() {
 }
 
 function clearScreen() {
-    screenValue = "";
+    screenValue = "0";
     screen.textContent = screenValue;
 }
 
 
 function operate(operator, num1, num2){
+
+    if(!operator || !num1 || !num2) {
+        // console.log("Lacking")
+    }
+
 // Operation functions
 
 const add = (val1, val2) => val1 + val2
 const subtract = (val1, val2) => val1 - val2
-const divide = (val1, val2) => val1 / val2
+const divide = (val1, val2) => {
+if (val1 === 0 || val2 === 0){
+    thereIsMessage = true;
+    return "Not so fast!"
+}
+    return  Math.round(val1 / val2)
+} 
 const multiply = (val1, val2) => val1 * val2
 
-let result = 0;
 
     if (operator === "multiplication"){
         value = multiply(num1, num2)
